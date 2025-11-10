@@ -1,0 +1,49 @@
+
+
+SQL> CREATE TABLE lib1 (
+  2    rollno NUMBER(10),
+  3    name VARCHAR2(20),
+  4    bookname VARCHAR2(30)
+  5  );
+
+
+SQL> CREATE TABLE lib_audit (
+  2    rollno NUMBER(10),
+  3    name VARCHAR2(20),
+  4    bookname VARCHAR2(30)
+  5  );
+
+
+SQL> INSERT INTO lib1 VALUES (1, 'Amit', 'DBMS');
+
+SQL> INSERT INTO lib1 VALUES (2, 'Sneha', 'OS');
+
+SQL> INSERT INTO lib1 VALUES (3, 'Rahul', 'CN');
+
+SQL> COMMIT;
+
+
+SQL> CREATE OR REPLACE TRIGGER lib_trig
+  2  AFTER UPDATE OR DELETE ON lib1
+//referencing old as o new as n
+  3  FOR EACH ROW
+  4  BEGIN
+  5    INSERT INTO lib_audit
+  6    VALUES(:OLD.rollno, :OLD.name, :OLD.bookname);
+  7  END;
+  8  /
+
+
+SQL> SHOW ERRORS TRIGGER lib_trig;
+
+SQL> UPDATE lib1 SET bookname = 'Advanced DBMS' WHERE rollno = 1;
+
+SQL> SELECT * FROM lib1;
+
+SQL> DELETE FROM lib1 WHERE rollno = 2;
+
+SQL> SELECT * FROM lib1;
+
+SQL> SELECT * FROM lib_audit;
+
+
